@@ -39,16 +39,16 @@ class mat_movie_maker():
     def make_frame(self,time):
         self.ax.clear()
         freqs,absft = self.get_fft_of_time(time)
-        self.ax.plot(freqs,absft, lw = 3)
+        self.ax.plot(freqs,absft)
+        self.ax.set_xlabel('Frequency')
+        self.ax.set_ylabel('Amplitude')
         #self.ax.set_ylim(-1.5, 2.5)
         return mplfig_to_npimage(self.fig)
         pass
 
     def get_fft_of_time(self,time):
-        (data, times)  = self.get_data_in_time_range(time-self.rollingfft_length,time)
+        (data, times)  = self.get_data_in_time_range(time,time+self.rollingfft_length)
         avg_sample_int = np.average(np.diff(times))
-        begining = times[0]
-        end = times[-1]
         samplingFrequency = 1/avg_sample_int
         fourierTransform = np.fft.fft(data)/len(data)           # Normalize amplitude
         fourierTransform = fourierTransform[range(int(len(data)/2))] # Exclude sampling frequency 
@@ -63,7 +63,9 @@ class mat_movie_maker():
         pass
 
     def get_data_in_time_range(self, start_time, end_time):
-        indexes = [index for index, _time in enumerate(self.data_time) if ((_time-self.start_time).total_seconds() >= start_time and (_time-self.end_time).total_seconds() <end_time)]
+        indexes = [index for index, _time in enumerate(self.data_time) if (start_time <= ((_time-self.start_time).total_seconds()) < end_time)]
+        if len(indexes) < 10:
+            None
         data = [self.data_xl[index]for index in indexes]
         _time = [(self.data_time[index]-self.start_time).total_seconds() for index in indexes]
         return (data,_time)
