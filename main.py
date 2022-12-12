@@ -2,12 +2,13 @@ import numpy as np
 #import scipy as sp
 import scipy.io as sio
 import matplotlib.pyplot as plt
-from moviepy.editor import VideoClip
+from moviepy.editor import VideoClip, CompositeAudioClip,AudioFileClip
 from moviepy.video.io.bindings import mplfig_to_npimage
 import csv
 from datetime import datetime as dt, timedelta as td
 
 FILE_NAME = "sensorlog_20221212_144004.csv"
+AUDIO_FILE = "sensorlog_20221212_144004.mp4"
 
 class mat_movie_maker():
     video_offset = 0
@@ -26,13 +27,16 @@ class mat_movie_maker():
     def calculate_duration(self):
         self._start_time = min(self.data_time)
         self._end_time = max(self.data_time)
-        return (self._end_time-self._start_time).total_seconds()-self.rollingfft_length
+        return (self._end_time-self._start_time).total_seconds()#-self.rollingfft_length
 
 
     def make_movie(self):
         self.fig, self.ax = plt.subplots()
         animation = VideoClip(self.make_frame, duration = self.calculate_duration())
         #animation.ipython_display(fps = 30, loop = True, autoplay = True)
+        audioclip = AudioFileClip(AUDIO_FILE)
+        new_audioclip = CompositeAudioClip([audioclip])
+        animation.audio = new_audioclip
         animation.write_videofile(filename= FILE_NAME+".avi",fps = 30,codec = "mpeg4")
         pass
 
@@ -48,7 +52,8 @@ class mat_movie_maker():
         pass
 
     def get_fft_of_time(self,time):
-        (data, times)  = self.get_data_in_time_range(time,time+self.rollingfft_length)
+        s_time = max(0,time-self.rollingfft_length)
+        (data, times)  = self.get_data_in_time_range(s_time,s_time+self.rollingfft_length)
         avg_sample_int = np.average(np.diff(times))
         samplingFrequency = 1/avg_sample_int
         fourierTransform = np.fft.fft(data)/len(data)           # Normalize amplitude
