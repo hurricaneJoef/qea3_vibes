@@ -7,7 +7,7 @@ from moviepy.video.io.bindings import mplfig_to_npimage
 import csv
 from datetime import datetime as dt, timedelta as td
 
-FILE_NAME = "sensorlog_20221201_165510.csv"
+FILE_NAME = "sensorlog_20221212_144004.csv"
 
 class mat_movie_maker():
     video_offset = 0
@@ -24,9 +24,9 @@ class mat_movie_maker():
         pass
 
     def calculate_duration(self):
-        self.start_time = min(self.data_time)
-        self.end_time = max(self.data_time)
-        return (self.end_time-self.start_time).total_seconds()-self.rollingfft_length
+        self._start_time = min(self.data_time)
+        self._end_time = max(self.data_time)
+        return (self._end_time-self._start_time).total_seconds()-self.rollingfft_length
 
 
     def make_movie(self):
@@ -42,6 +42,7 @@ class mat_movie_maker():
         self.ax.plot(freqs,absft)
         self.ax.set_xlabel('Frequency')
         self.ax.set_ylabel('Amplitude')
+        self.ax.set_ylim(0,.2)
         #self.ax.set_ylim(-1.5, 2.5)
         return mplfig_to_npimage(self.fig)
         pass
@@ -59,15 +60,19 @@ class mat_movie_maker():
         timePeriod  = tpCount/samplingFrequency
 
         frequencies = values/timePeriod
-        return (frequencies,abs(fourierTransform))
+        return (frequencies[1:-1],abs(fourierTransform[1:-1]))
         pass
 
     def get_data_in_time_range(self, start_time, end_time):
-        indexes = [index for index, _time in enumerate(self.data_time) if (start_time <= ((_time-self.start_time).total_seconds()) < end_time)]
-        if len(indexes) < 10:
-            None
+        indexes = []#index 
+        for index, _time in enumerate(self.data_time):
+            sec_from_start = ((_time-self._start_time).total_seconds())
+            if (start_time <= sec_from_start < end_time):
+                indexes.append(index)
+                if index > 5320:
+                    None
         data = [self.data_xl[index]for index in indexes]
-        _time = [(self.data_time[index]-self.start_time).total_seconds() for index in indexes]
+        _time = [(self.data_time[index]-self._start_time).total_seconds() for index in indexes]
         return (data,_time)
 MONTHS = {
     "Jan":"01",
@@ -109,7 +114,7 @@ if __name__ == "__main__":
             data.append(mag)
             timedata.append((time,mag))
 
-    mm = mat_movie_maker(times,data)
+    mm = mat_movie_maker(times[0:-1],data[0:-1])
     mm.make_movie()
 
     None
