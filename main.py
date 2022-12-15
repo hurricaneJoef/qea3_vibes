@@ -31,6 +31,7 @@ class mat_movie_maker():
 
 
     def make_movie(self):
+        self.generate_psd()
         self.fig, self.ax = plt.subplots()
         animation = VideoClip(self.make_frame, duration = self.calculate_duration())
         #animation.ipython_display(fps = 30, loop = True, autoplay = True)
@@ -43,17 +44,34 @@ class mat_movie_maker():
     def make_frame(self,time):
         self.ax.clear()
         freqs,absft = self.get_fft_of_time(time)
-        self.ax.plot(freqs,absft)
-        self.ax.set_xlabel('Frequency')
+        rpmfreqs = freqs * 60
+        self.ax.plot(rpmfreqs,absft)
+        self.ax.set_xlabel('Frequency (rpm)')
         self.ax.set_ylabel('Amplitude')
         self.ax.set_ylim(0,.2)
         #self.ax.set_ylim(-1.5, 2.5)
         return mplfig_to_npimage(self.fig)
         pass
 
-    def get_fft_of_time(self,time):
-        s_time = max(0,time-self.rollingfft_length)
-        (data, times)  = self.get_data_in_time_range(s_time,s_time+self.rollingfft_length)
+    def generate_psd(self):
+        self._start_time = min(self.data_time)
+        _time = [(t-self._start_time).total_seconds() for t in self.data_time]
+        avg_sample_int = np.average(np.diff(_time))
+        samplingFrequency = 1/avg_sample_int
+        fig, ax = plt.subplots()
+        px, f = ax.psd(self.data_xl,Fs=samplingFrequency)
+        image_format = 'svg' # e.g .png, .svg, etc.
+        image_name = FILE_NAME+'.svg'
+        fig.savefig(image_name, format=image_format, dpi=2400)
+        image_format = 'png' # e.g .png, .svg, etc.
+        image_name = FILE_NAME+'.png'
+        fig.savefig(image_name, format=image_format, dpi=600)
+        pass
+
+
+
+    def get_fft_from_time_to_time(self,start_time,end_time):
+        (data, times)  = self.get_data_in_time_range(start_time,end_time)
         avg_sample_int = np.average(np.diff(times))
         samplingFrequency = 1/avg_sample_int
         fourierTransform = np.fft.fft(data)/len(data)           # Normalize amplitude
@@ -66,6 +84,12 @@ class mat_movie_maker():
 
         frequencies = values/timePeriod
         return (frequencies[1:-1],abs(fourierTransform[1:-1]))
+
+    def get_fft_of_time(self,time):
+        s_time = max(0,time-self.rollingfft_length)
+        e_time = min(self.calculate_duration(),s_time+self.rollingfft_length)
+        return self.get_fft_from_time_to_time(s_time,e_time)
+        
         pass
 
     def get_data_in_time_range(self, start_time, end_time):

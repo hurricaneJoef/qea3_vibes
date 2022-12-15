@@ -1,0 +1,6 @@
+moviepy
+numpy
+matplotlib
+scipy
+datetime
+csv
