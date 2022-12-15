@@ -30,7 +30,7 @@ url: "https://hurricaneJoef.github.io" # the base hostname & protocol for your s
 
 # Build settings
 theme: "minimal-mistakes-jekyll"
-minimal_mistakes_skin: "air"
+minimal_mistakes_skin: "dark"
 
 markdown: "kramdown"
 
