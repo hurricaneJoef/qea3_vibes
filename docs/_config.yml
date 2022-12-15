@@ -29,8 +29,8 @@ url: "https://hurricaneJoef.github.io" # the base hostname & protocol for your s
 # github_username:  jekyll
 
 # Build settings
-theme: minimal-mistakes-jekyll
-minimal_mistakes_skin: "air"
+theme: "minimal-mistakes-jekyll"
+minimal_mistakes_skin: "dark"
 
 markdown: "kramdown"
 
