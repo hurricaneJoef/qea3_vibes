@@ -69,7 +69,7 @@
 </script>
 
 <!-- For all browsers -->
-<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="stylesheet" href="/qea3_vibes/assets/css/main.css">
 <link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
 
@@ -108,15 +108,15 @@
           
         </a>
         <ul class="visible-links"><li class="masthead__menu-item">
-              <a href="/">Home</a>
+              <a href="/qea3_vibes/">Home</a>
             </li><li class="masthead__menu-item">
-              <a href="/maths/">Maths</a>
+              <a href="/qea3_vibes/maths/">Maths</a>
             </li><li class="masthead__menu-item">
-              <a href="/implementation/">Implementation</a>
+              <a href="/qea3_vibes/implementation/">Implementation</a>
             </li><li class="masthead__menu-item">
-              <a href="/results/">Results</a>
+              <a href="/qea3_vibes/results/">Results</a>
             </li><li class="masthead__menu-item">
-              <a href="/references/">References</a>
+              <a href="/qea3_vibes/references/">References</a>
             </li><li class="masthead__menu-item">
               <a href="https://github.com/hurricaneJoef/qea3_vibes">GitHub</a>
             </li></ul>
@@ -169,18 +169,18 @@
 
 <p>To analyze the frequencies as the car accelerates and decelerates, we will take the FFT of the one-second window. We will do this for every second we partition. To recap, the FFT algorithm helps us compute the discrete Fourier transform (DFT). Since we are computing the DFT of a 1000 point sample, we will get a 1000 by 1000 DFT matrix.</p>
 
-<p><img src="/media/images/FFTmatrix.PNG" alt="DFT Matrix" />
+<p><img src="/qea3_vibes/media/images/FFTmatrix.PNG" alt="DFT Matrix" />
 <em>Figure 1: FFT matrix that gets multiplied to our data to convert from the time domain to the frequency domain. N is the number of points in the data set.</em></p>
 
 <p>Where the W (weight) is calculated by the following equation</p>
 
-<p><img src="/media/images/FFTW^n.PNG" alt="W calculation" /></p>
+<p><img src="/qea3_vibes/media/images/FFTW^n.PNG" alt="W calculation" /></p>
 
 <p><em>Figure 2: Weight equation for the nth index of a FFT of N points. j is the square root of -1.</em></p>
 
 <p>This all gets multiplied to the original data set x, to produce the data in the frequency domain represented by the following equation.</p>
 
-<p><img src="/media/images/newDFT.PNG" alt="Data in Frequency Domanin" /></p>
+<p><img src="/qea3_vibes/media/images/newDFT.PNG" alt="Data in Frequency Domanin" /></p>
 
 <p><em>Figure 3: Data X(k) in terms of the frequency domain for N points where the data matrix x(n) is multiplied by the weights.</em></p>
 
@@ -191,7 +191,7 @@
 <h2 id="power-spectral-densiy-psd">Power Spectral Densiy (PSD)</h2>
 <p>A PSD takes the FFT matrix (which is a matrix of complex numbers) and multiplies it with its complex conjugate. It then divides this by the frequency step. We must also divide by 2 to convert the amplitude to be rms^2/Hz (rms being root mean squared). Note, the PSD is the limit of these operations as the frequency step approaches 0. Below is a representation of this equation.</p>
 
-<p><img src="/media/images/psd.PNG" alt="PSD Equation" /></p>
+<p><img src="/qea3_vibes/media/images/psd.PNG" alt="PSD Equation" /></p>
 
 <p><em>Figure 4: Equation to calculate the PSD, where Δf is the frequency step (1/time) and X*(f) is the complex conjugate of the FFT X(f).</em></p>
 
@@ -247,7 +247,7 @@
     </div>
 
     
-  <script src="/assets/js/main.min.js"></script>
+  <script src="/qea3_vibes/assets/js/main.min.js"></script>
 
 
 
