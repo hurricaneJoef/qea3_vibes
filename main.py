@@ -73,7 +73,7 @@ class mat_movie_maker():
         no_g = np.add(self.data_xl,-np.average(self.data_xl))
         px, frpm = ax.psd(no_g,Fs=samplingFrequency*60)
         gear_fs = [np.multiply(frpm,gear) for gear in GEAR_RATIOS]
-        ax.set_xlim(0,3000)
+        ax.set_xlim(0,5500)
         ax.set_xlabel("Frequency (rpm)")
         image_format = 'svg' # e.g .png, .svg, etc.
         image_name = FILE_NAME+'.svg'
