@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>https://hurricaneJoef.github.io/implementation/</loc>
+<loc>"https://github.com/hurricaneJoef/qea3_vibes"/implementation/</loc>
 </url>
 <url>
-<loc>https://hurricaneJoef.github.io/</loc>
+<loc>"https://github.com/hurricaneJoef/qea3_vibes"/</loc>
 </url>
 <url>
-<loc>https://hurricaneJoef.github.io/maths/</loc>
+<loc>"https://github.com/hurricaneJoef/qea3_vibes"/maths/</loc>
 </url>
 <url>
-<loc>https://hurricaneJoef.github.io/references/</loc>
+<loc>"https://github.com/hurricaneJoef/qea3_vibes"/references/</loc>
 </url>
 <url>
-<loc>https://hurricaneJoef.github.io/results/</loc>
+<loc>"https://github.com/hurricaneJoef/qea3_vibes"/results/</loc>
 </url>
 </urlset>
