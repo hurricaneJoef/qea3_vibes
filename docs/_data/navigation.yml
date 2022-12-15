@@ -5,5 +5,7 @@ main:
   url: /maths/
 - title: "Implementation"
   url: /implementation/
+- title: "Results"
+  url: /results/
 - title: "GitHub"
 - url: https://github.com/hurricaneJoef/qea3_vibes
