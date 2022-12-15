@@ -12,7 +12,7 @@ Although one could always detect the revolutions per minute (rpm) or speeds at w
 ## Record the Vibrations
 Our software takes in a very specifically formatted `.csv` file based on `.mat` files. We recommend using the MATLAB Mobile app since it allows us to record a face value sample rate of 100Hz that actually resulted to be 200 Hz (increases our Nyquist frequency to well above 6000 RPM which is rarerly achieved during a normal drive anyway). Before recording the data, make sure to set the sampling speed for the accelerometer to 100Hz (the highest setting in MATLAB Mobile) in the Sampling Parameters bar. The screen should look something like this:
 
-![MATLAB Screen](/assets/images/matlab_screen.jpg)
+![MATLAB Screen](/media/images/matlab_screen.jpg)
 
 Then, place the phone on the dashboard of the vehicle. We personally placed it on a phone holder that is placed directly on the dashboard with command strips; however, it is best to keep the phone as flat to the dash's surface to avoid accounting for other motions such as the jitter of the dash-phone-holder system.
 

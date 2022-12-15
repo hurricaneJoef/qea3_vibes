@@ -12,18 +12,18 @@ To prove this to ourselves, the Nyquist Frequency is twice the frequency we are 
 
 To analyze the frequencies as the car accelerates and decelerates, we will take the FFT of the one-second window. We will do this for every second we partition. To recap, the FFT algorithm helps us compute the discrete Fourier transform (DFT). Since we are computing the DFT of a 1000 point sample, we will get a 1000 by 1000 DFT matrix.
 
-![DFT Matrix](/assets/images/FFTmatrix.PNG)
+![DFT Matrix](/media/images/FFTmatrix.PNG)
 _Figure 1: FFT matrix that gets multiplied to our data to convert from the time domain to the frequency domain. N is the number of points in the data set._
 
 Where the W (weight) is calculated by the following equation
 
-![W calculation](/assets/images/FFTW^n.PNG)
+![W calculation](/media/images/FFTW^n.PNG)
 
 _Figure 2: Weight equation for the nth index of a FFT of N points. j is the square root of -1._
 
 This all gets multiplied to the original data set x, to produce the data in the frequency domain represented by the following equation.
 
-![Data in Frequency Domanin](/assets/images/newDFT.PNG)
+![Data in Frequency Domanin](/media/images/newDFT.PNG)
 
 _Figure 3: Data X(k) in terms of the frequency domain for N points where the data matrix x(n) is multiplied by the weights._
 
@@ -34,7 +34,7 @@ Unfortunately, the frequencies recorded by the accelerometer also contain a lot 
 ## Power Spectral Densiy (PSD)
 A PSD takes the FFT matrix (which is a matrix of complex numbers) and multiplies it with its complex conjugate. It then divides this by the frequency step. We must also divide by 2 to convert the amplitude to be rms^2/Hz (rms being root mean squared). Note, the PSD is the limit of these operations as the frequency step approaches 0. Below is a representation of this equation.
 
-![PSD Equation](/assets/images/psd.PNG)
+![PSD Equation](/media/images/psd.PNG)
 
 _Figure 4: Equation to calculate the PSD, where Δf is the frequency step (1/time) and X*(f) is the complex conjugate of the FFT X(f)._
 
