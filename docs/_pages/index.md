@@ -26,3 +26,11 @@ To run our tool, simply run `python main.py` in a terminal of your choice. If yo
 cd PATH_TO_DIRECTORY/
 python main.py
 ```
+Running the program may take a little while, but what you will get is effectively a movie showing the rolling FFT, and two images - one for the PSD accros the data, and another for the PSDs of the transmission gears. Depending on how the peaks line up, it may indicate whether the gears are presenting any issues, or otherwise can be a history of gear usage during the ride. To get an accurate PSD result for the gears, you may have to replace them with the specs of your vehicle.
+
+For a more complete demonstration of the results, please refer to our [results](/results/) page.
+
+## Reflections
+We acknowledge that this is not a fool proof solution to any car issue in its current state. This is merely a proof of concept that these vibrations can and do contain information about the driving state of the vehicle. Several issues require more than just RPM peaks, but rather need a combination of velocity, and in some cases, knowledge of which gear the car is in. At a given time.
+
+As previously noted, real vibration analyses make sure of very precise sensors that are places in very specific points of the vehicle. They also take advantage of live data collection and are connected to the car's electronics through the OBD2 port, which we were unable to do for this project's scope. Regardless, this software model proves to us that there are definitely correlations between vibrations and car parts, and that vibrations can be used to determine vehicle issues. Further reflections can be found in our [results](/results/) page.
