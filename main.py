@@ -9,13 +9,17 @@ from datetime import datetime as dt, timedelta as td
 
 FILE_NAME = "sensorlog_20221212_144004.csv"
 AUDIO_FILE = "sensorlog_20221212_144004.mp4"
+GEAR_RATIOS = [3.75,2.41,1.41,1.0,.72]
+AXEL_RATIO = 3.31
+TIRE_DIAMETER = 84.8/(12*5280) #MILES
+ordinal = lambda n: "%d%s" % (n,"tsnrhtdd"[(n//10%10!=1)*(n%10<4)*n%10::4])
 
 class mat_movie_maker():
     video_offset = 0
     xl_offset = 0
     total_offset=1
 
-    rollingfft_length = 1
+    rollingfft_length = 5
 
     def __init__(self,_time,data):
         self.data_time = _time
@@ -25,46 +29,71 @@ class mat_movie_maker():
         pass
 
     def calculate_duration(self):
-        self._start_time = min(self.data_time)
-        self._end_time = max(self.data_time)
-        return (self._end_time-self._start_time).total_seconds()#-self.rollingfft_length
+        audioclip = AudioFileClip(AUDIO_FILE)
+        new_audioclip = CompositeAudioClip([audioclip])
+        self.audio_durarion = new_audioclip.duration
+        return self.audio_durarion
+        #self._start_time = min(self.data_time)
+        #self._end_time = max(self.data_time)
+        #out = (self._end_time-self._start_time).total_seconds()
+        #return (self._end_time-self._start_time).total_seconds()#-self.rollingfft_length
 
 
     def make_movie(self):
         self.generate_psd()
         self.fig, self.ax = plt.subplots()
-        animation = VideoClip(self.make_frame, duration = self.calculate_duration())
         #animation.ipython_display(fps = 30, loop = True, autoplay = True)
         audioclip = AudioFileClip(AUDIO_FILE)
         new_audioclip = CompositeAudioClip([audioclip])
+        self.audio_durarion = new_audioclip.duration
+
+        animation = VideoClip(self.make_frame, duration =self.audio_durarion)
         animation.audio = new_audioclip
-        animation.write_videofile(filename= FILE_NAME+".avi",fps = 30,codec = "mpeg4")
+        animation.write_videofile(filename= FILE_NAME+".mp4",fps = 30,codec = "h264")
         pass
 
     def make_frame(self,time):
         self.ax.clear()
         freqs,absft = self.get_fft_of_time(time)
-        rpmfreqs = freqs * 60
-        self.ax.plot(rpmfreqs,absft)
+        self.ax.plot(freqs,absft)
         self.ax.set_xlabel('Frequency (rpm)')
         self.ax.set_ylabel('Amplitude')
-        self.ax.set_ylim(0,.2)
+        self.ax.set_ylim(0,.25)
+        self.ax.set_xlim(0,5500)
         #self.ax.set_ylim(-1.5, 2.5)
         return mplfig_to_npimage(self.fig)
         pass
 
     def generate_psd(self):
-        self._start_time = min(self.data_time)
-        _time = [(t-self._start_time).total_seconds() for t in self.data_time]
-        avg_sample_int = np.average(np.diff(_time))
-        samplingFrequency = 1/avg_sample_int
+        self.calculate_duration()
+        self._start_time = 0#min(self.data_time)
+
+        samplingFrequency = len(times)/self.audio_durarion
         fig, ax = plt.subplots()
-        px, f = ax.psd(self.data_xl,Fs=samplingFrequency)
+        no_g = np.add(self.data_xl,-np.average(self.data_xl))
+        px, frpm = ax.psd(no_g,Fs=samplingFrequency*60)
+        gear_fs = [np.multiply(frpm,gear) for gear in GEAR_RATIOS]
+        ax.set_xlim(0,5500)
+        ax.set_xlabel("Frequency (rpm)")
         image_format = 'svg' # e.g .png, .svg, etc.
         image_name = FILE_NAME+'.svg'
         fig.savefig(image_name, format=image_format, dpi=2400)
         image_format = 'png' # e.g .png, .svg, etc.
         image_name = FILE_NAME+'.png'
+        fig.savefig(image_name, format=image_format, dpi=600)
+        pxrpm = np.multiply(px,60)
+        ax.clear()
+        for i, gearf in enumerate(gear_fs):
+            ax.plot(gearf,pxrpm,label = f"{ordinal(i+1)} gear")
+        ax.legend()
+        ax.set_xlim(0,4500)
+        ax.set_xlabel("engine rpms compared to driveshaft speed")
+        ax.set_ylabel("power spectral density (db/rpm")
+        image_format = 'svg' # e.g .png, .svg, etc.
+        image_name = FILE_NAME+'gears.svg'
+        fig.savefig(image_name, format=image_format, dpi=2400)
+        image_format = 'png' # e.g .png, .svg, etc.
+        image_name = FILE_NAME+'gears.png'
         fig.savefig(image_name, format=image_format, dpi=600)
         pass
 
@@ -72,36 +101,38 @@ class mat_movie_maker():
 
     def get_fft_from_time_to_time(self,start_time,end_time):
         (data, times)  = self.get_data_in_time_range(start_time,end_time)
+        data = np.add(data,-np.average(self.data_xl))
         avg_sample_int = np.average(np.diff(times))
-        samplingFrequency = 1/avg_sample_int
+        samplingFrequency = len(self.data_time)/self.audio_durarion#1/avg_sample_int
         fourierTransform = np.fft.fft(data)/len(data)           # Normalize amplitude
         fourierTransform = fourierTransform[range(int(len(data)/2))] # Exclude sampling frequency 
         tpCount     = len(data)
 
         values      = np.arange(int(tpCount/2))
 
-        timePeriod  = tpCount/samplingFrequency
+        timePeriod  = tpCount/(samplingFrequency*60)
 
         frequencies = values/timePeriod
-        return (frequencies[1:-1],abs(fourierTransform[1:-1]))
+        return (frequencies,abs(fourierTransform))
 
     def get_fft_of_time(self,time):
         s_time = max(0,time-self.rollingfft_length)
         e_time = min(self.calculate_duration(),s_time+self.rollingfft_length)
+        s_time = min(s_time,e_time-self.rollingfft_length)
         return self.get_fft_from_time_to_time(s_time,e_time)
         
         pass
 
     def get_data_in_time_range(self, start_time, end_time):
+        psudeo_times = [(self.audio_durarion/len(self.data_time))*i for i,_ in enumerate(self.data_time)]
         indexes = []#index 
-        for index, _time in enumerate(self.data_time):
-            sec_from_start = ((_time-self._start_time).total_seconds())
+        for index, _time in enumerate(psudeo_times):
+            sec_from_start = _time#((_time-self._start_time).total_seconds())
             if (start_time <= sec_from_start < end_time):
                 indexes.append(index)
-                if index > 5320:
-                    None
         data = [self.data_xl[index]for index in indexes]
-        _time = [(self.data_time[index]-self._start_time).total_seconds() for index in indexes]
+        #_time = [(psudeo_times[index]-self._start_time).total_seconds() for index in indexes]
+        _time = [psudeo_times[index] for index in indexes]
         return (data,_time)
 MONTHS = {
     "Jan":"01",
