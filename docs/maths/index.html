@@ -1,0 +1,262 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Maths Behind Vibration Analysis - Automobile Vibration Analysis</title>
+<meta name="description" content="A display of our understanding of vibration analysis by using FFTs and PSDs to diagnose potential issues in a vehicle.">
+
+
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Automobile Vibration Analysis">
+<meta property="og:title" content="Maths Behind Vibration Analysis">
+<meta property="og:url" content="https://hurricaneJoef.github.io/maths/">
+
+
+  <meta property="og:description" content="A display of our understanding of vibration analysis by using FFTs and PSDs to diagnose potential issues in a vehicle.">
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="canonical" href="https://hurricaneJoef.github.io/maths/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://hurricaneJoef.github.io/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          Automobile Vibration Analysis
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li><li class="masthead__menu-item">
+              <a href="/maths/">Maths</a>
+            </li><li class="masthead__menu-item">
+              <a href="/implementation/">Implementation</a>
+            </li><li class="masthead__menu-item">
+              <a href="/results/">Results</a>
+            </li><li class="masthead__menu-item">
+              <a href="/references/">References</a>
+            </li><li class="masthead__menu-item">
+              <a href="https://github.com/hurricaneJoef/qea3_vibes">GitHub</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Maths Behind Vibration Analysis">
+    
+    
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Maths Behind Vibration Analysis
+</h1>
+          
+
+
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <p>In our project, we explored two different ways of analyzing vibrations: one using the fast fourier transform (FFT) to get the data in the frequency domain, another using the power spectral density (PSD) to normalize the DFT data to reduce the amount of random vibrations.</p>
+
+<h2 id="fast-fourier-transform-fft">Fast Fourier Transform (FFT)</h2>
+<p>For our MVP analysis, we will be taking fast fourier transforms (FFTs) of fragments of the data collected by the accelerometer to convert the data to the frequency domain. Since we are analyzing the data set of a car whose engine revolutions are not necessarily constant, we will take scrolling data of 5 seconds’ worth of data. A second’s worth of data that was sampled at 200Hz will be 200 points. Although it’s not a power of 2, it is still a sufficient amount of data find the revolutions per minute (RPM) of an engine running at less than 5500 RPM, which is more than sufficient for our purposes.</p>
+
+<p>To prove this to ourselves, the Nyquist Frequency is twice the frequency we are trying to measure. Assuming a maximum RPM of 5500, we would need to sample at a rate just above 11000 RPM, or 183.33 Hz. Since 200Hz is greater than 183.33Hz, we can assume that we are okay. It is valuable, however, that MATLAB Mobile technically said that we were sampling at 100 Hz, which would reduce our accuracy down to just shy of 3000 RPM. However, when looking at the sampled data, we actually found that the data was recorded in 200Hz, giving us the 200 points per second.</p>
+
+<p>To analyze the frequencies as the car accelerates and decelerates, we will take the FFT of the one-second window. We will do this for every second we partition. To recap, the FFT algorithm helps us compute the discrete Fourier transform (DFT). Since we are computing the DFT of a 1000 point sample, we will get a 1000 by 1000 DFT matrix.</p>
+
+<p><img src="/media/images/FFTmatrix.PNG" alt="DFT Matrix" />
+<em>Figure 1: FFT matrix that gets multiplied to our data to convert from the time domain to the frequency domain. N is the number of points in the data set.</em></p>
+
+<p>Where the W (weight) is calculated by the following equation</p>
+
+<p><img src="/media/images/FFTW^n.PNG" alt="W calculation" /></p>
+
+<p><em>Figure 2: Weight equation for the nth index of a FFT of N points. j is the square root of -1.</em></p>
+
+<p>This all gets multiplied to the original data set x, to produce the data in the frequency domain represented by the following equation.</p>
+
+<p><img src="/media/images/newDFT.PNG" alt="Data in Frequency Domanin" /></p>
+
+<p><em>Figure 3: Data X(k) in terms of the frequency domain for N points where the data matrix x(n) is multiplied by the weights.</em></p>
+
+<p>By scrolling through FFTs, we can stitch them together to create a short film that displays how frequency intensities evolve as the car drives. Watching a replay of the FFT film allows us to see the the RPM grow as we accelerate the vehicle. We can also see other frequencies develop and appear as the car drives.</p>
+
+<p>Unfortunately, the frequencies recorded by the accelerometer also contain a lot of external frequencies that are not necessarily related to the vehicle, such as road imperfections or changes in elevation. In order to better understand the frequencies produced by the vehicle, we must be able to normalize the data such that road imperfections or other random vibrations are reduced from the data set, and the frequencies that appear the most will show up with greater amplitude. To do this, we must calculate a power spectrum density (PSD).</p>
+
+<h2 id="power-spectral-densiy-psd">Power Spectral Densiy (PSD)</h2>
+<p>A PSD takes the FFT matrix (which is a matrix of complex numbers) and multiplies it with its complex conjugate. It then divides this by the frequency step. We must also divide by 2 to convert the amplitude to be rms^2/Hz (rms being root mean squared). Note, the PSD is the limit of these operations as the frequency step approaches 0. Below is a representation of this equation.</p>
+
+<p><img src="/media/images/psd.PNG" alt="PSD Equation" /></p>
+
+<p><em>Figure 4: Equation to calculate the PSD, where Δf is the frequency step (1/time) and X*(f) is the complex conjugate of the FFT X(f).</em></p>
+
+<p>In this data, we will be able to see the intensity of different frequencies as we drive them. Thus, instead of having to chunk down smaller windows like the scrolling FFT, we can simply take the PSD of the entire data set once.</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+
+      </footer>
+
+      
+
+      
+    </div>
+
+    
+  </article>
+
+  
+  
+</div>
+
+    </div>
+
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+
+    
+
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Automobile Vibration Analysis. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+  </body>
+</html>

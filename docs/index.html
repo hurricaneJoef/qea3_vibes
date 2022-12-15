@@ -1,0 +1,255 @@
+<!doctype html>
+<!--
+  Minimal Mistakes Jekyll Theme 4.24.0 by Michael Rose
+  Copyright 2013-2020 Michael Rose - mademistakes.com | @mmistakes
+  Free for personal and commercial use under the MIT license
+  https://github.com/mmistakes/minimal-mistakes/blob/master/LICENSE
+-->
+<html lang="en" class="no-js">
+  <head>
+    <meta charset="utf-8">
+
+<!-- begin _includes/seo.html --><title>Vibration Analysis Diagnostics - Automobile Vibration Analysis</title>
+<meta name="description" content="A display of our understanding of vibration analysis by using FFTs and PSDs to diagnose potential issues in a vehicle.">
+
+
+
+<meta property="og:type" content="website">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="Automobile Vibration Analysis">
+<meta property="og:title" content="Vibration Analysis Diagnostics">
+<meta property="og:url" content="https://hurricaneJoef.github.io/">
+
+
+  <meta property="og:description" content="A display of our understanding of vibration analysis by using FFTs and PSDs to diagnose potential issues in a vehicle.">
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="canonical" href="https://hurricaneJoef.github.io/">
+
+
+
+
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    
+      "@type": "Person",
+      "name": null,
+      "url": "https://hurricaneJoef.github.io/"
+    
+  }
+</script>
+
+
+
+
+
+
+
+<!-- end _includes/seo.html -->
+
+
+
+
+<!-- https://t.co/dKP3o1e -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script>
+  document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/g, '') + ' js ';
+</script>
+
+<!-- For all browsers -->
+<link rel="stylesheet" href="/assets/css/main.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css"></noscript>
+
+
+
+    <!-- start custom head snippets -->
+
+<!-- insert favicons. use https://realfavicongenerator.net/ -->
+
+<!-- end custom head snippets -->
+
+  </head>
+
+  <body class="layout--single">
+    <nav class="skip-links">
+  <ul>
+    <li><a href="#site-nav" class="screen-reader-shortcut">Skip to primary navigation</a></li>
+    <li><a href="#main" class="screen-reader-shortcut">Skip to content</a></li>
+    <li><a href="#footer" class="screen-reader-shortcut">Skip to footer</a></li>
+  </ul>
+</nav>
+
+    <!--[if lt IE 9]>
+<div class="notice--danger align-center" style="margin: 0;">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience.</div>
+<![endif]-->
+
+    
+
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav" class="greedy-nav">
+        
+        <a class="site-title" href="/">
+          Automobile Vibration Analysis
+          
+        </a>
+        <ul class="visible-links"><li class="masthead__menu-item">
+              <a href="/">Home</a>
+            </li><li class="masthead__menu-item">
+              <a href="/maths/">Maths</a>
+            </li><li class="masthead__menu-item">
+              <a href="/implementation/">Implementation</a>
+            </li><li class="masthead__menu-item">
+              <a href="/results/">Results</a>
+            </li><li class="masthead__menu-item">
+              <a href="/references/">References</a>
+            </li><li class="masthead__menu-item">
+              <a href="https://github.com/hurricaneJoef/qea3_vibes">GitHub</a>
+            </li></ul>
+        
+        <button class="greedy-nav__toggle hidden" type="button">
+          <span class="visually-hidden">Toggle menu</span>
+          <div class="navicon"></div>
+        </button>
+        <ul class="hidden-links hidden"></ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+
+    <div class="initial-content">
+      
+
+
+
+<div id="main" role="main">
+  
+
+
+  <article class="page" itemscope itemtype="https://schema.org/CreativeWork">
+    <meta itemprop="headline" content="Vibration Analysis Diagnostics">
+    
+    
+    
+
+    <div class="page__inner-wrap">
+      
+        <header>
+          <h1 id="page-title" class="page__title" itemprop="headline">Vibration Analysis Diagnostics
+</h1>
+          
+
+
+        </header>
+      
+
+      <section class="page__content" itemprop="text">
+        
+        <h2 id="preface">Preface</h2>
+<p>Have you ever heard an annoying, funky little recurring noise when driving down the highway and simply turned up the radio slightly? Don’t disregard that noise! You might accidentally be causing a disservice to the health of your vehicle. A lot of the noises heard are a result of vibrations at different points of a car that are transmitted through the drivetrain, suspention and chassis. These vibrations are always present to some degree, but at certain frequencies get amplified. This would be the part’s resonant frequency. We ideally do not want to find the resonant frequencies while in our every day drive, much less hover in them.</p>
+
+<p>Although one could always detect the revolutions per minute (rpm) or speeds at which vibrations feel much stronger by simply glancing at the dash, it’s not very intuitive to feel out which harmonics are also amplified at those rpm. According to vibration analysts, these harmonics can reveal to us roughly what part of the car is experiencing issues. Most professional equipment involve thousands of dollars worth sensors that get placed in very specific parts of the vehicle. However, since a lot of these vibrations travel through the entire system, we figured that a more economical way of recording this data would be through our phone accelerometers. We then created our system that takes in accelerometer data and produces a film featuring rolling fast fourier transform (FFT) of this data and a power spectral density (PSD) of the data.</p>
+
+<h2 id="record-the-vibrations">Record the Vibrations</h2>
+<p>Our software takes in a very specifically formatted <code class="language-plaintext highlighter-rouge">.csv</code> file based on <code class="language-plaintext highlighter-rouge">.mat</code> files. We recommend using the MATLAB Mobile app since it allows us to record a face value sample rate of 100Hz that actually resulted to be 200 Hz (increases our Nyquist frequency to well above 6000 RPM which is rarerly achieved during a normal drive anyway). Before recording the data, make sure to set the sampling speed for the accelerometer to 100Hz (the highest setting in MATLAB Mobile) in the Sampling Parameters bar. The screen should look something like this:</p>
+
+<p><img src="/media/images/matlab_screen.jpg" alt="MATLAB Screen" /></p>
+
+<p>Then, place the phone on the dashboard of the vehicle. We personally placed it on a phone holder that is placed directly on the dashboard with command strips; however, it is best to keep the phone as flat to the dash’s surface to avoid accounting for other motions such as the jitter of the dash-phone-holder system.</p>
+
+<p>Once you’re ready to go for a drive, press the start button and you’re good to go! Just make sure that the phone doesn’t go into sleep mode at any point, so try to extend the phone’s screen time as long as the intended drive length, if not longer. Just remember to set it back after the experiment to conserve your battery!</p>
+
+<p>Once the data has been saved into a <code class="language-plaintext highlighter-rouge">.mat</code> file, retrieve the data from the MATLAB cloud and download it to the computer where this software lives. You will need to have MATLAB open to convert the <code class="language-plaintext highlighter-rouge">.mat</code> file into a <code class="language-plaintext highlighter-rouge">.csv</code> file. To do this, load the file into the workspace, and simply hit the export button, and export to a <code class="language-plaintext highlighter-rouge">.csv</code> file. An example of a <code class="language-plaintext highlighter-rouge">.csv</code> file can be found in the Github repository.</p>
+
+<h2 id="analyze-the-vibrations">Analyze the Vibrations</h2>
+<p>To run our tool, simply run <code class="language-plaintext highlighter-rouge">python main.py</code> in a terminal of your choice. If you hadn’t already, don’t forget to make sure you have the dependencies the software takes advantage of. Please refer to the <a href="/requirements.txt">requirements.txt</a> file enlosing this information. Make sure to be in the repository where the <code class="language-plaintext highlighter-rouge">.csv</code> file <strong>and</strong> the <code class="language-plaintext highlighter-rouge">main.py</code> file are. An easy way would be to run the following series of commands, replacing “PATH_TO_DIRECTORY” with the correct path to the directory containing the necessary files:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd PATH_TO_DIRECTORY/
+python main.py
+</code></pre></div></div>
+<p>Running the program may take a little while, but what you will get is effectively a movie showing the rolling FFT, and two images - one for the PSD accros the data, and another for the PSDs of the transmission gears. Depending on how the peaks line up, it may indicate whether the gears are presenting any issues, or otherwise can be a history of gear usage during the ride. To get an accurate PSD result for the gears, you may have to replace them with the specs of your vehicle.</p>
+
+<p>For a more complete demonstration of the results, please refer to our <a href="/results/">results</a> page.</p>
+
+<h2 id="reflections">Reflections</h2>
+<p>We acknowledge that this is not a fool proof solution to any car issue in its current state. This is merely a proof of concept that these vibrations can and do contain information about the driving state of the vehicle. Several issues require more than just RPM peaks, but rather need a combination of velocity, and in some cases, knowledge of which gear the car is in. At a given time.</p>
+
+<p>As previously noted, real vibration analyses make sure of very precise sensors that are places in very specific points of the vehicle. They also take advantage of live data collection and are connected to the car’s electronics through the OBD2 port, which we were unable to do for this project’s scope. Regardless, this software model proves to us that there are definitely correlations between vibrations and car parts, and that vibrations can be used to determine vehicle issues. Further reflections can be found in our <a href="/results/">results</a> page.</p>
+
+        
+      </section>
+
+      <footer class="page__meta">
+        
+        
+
+
+        
+
+
+      </footer>
+
+      
+
+      
+    </div>
+
+    
+  </article>
+
+  
+  
+</div>
+
+    </div>
+
+    
+
+    <div id="footer" class="page__footer">
+      <footer>
+        <!-- start custom footer snippets -->
+
+<!-- end custom footer snippets -->
+        <div class="page__footer-follow">
+  <ul class="social-icons">
+    
+
+    
+
+    
+  </ul>
+</div>
+
+<div class="page__footer-copyright">&copy; 2022 Automobile Vibration Analysis. Powered by <a href="https://jekyllrb.com" rel="nofollow">Jekyll</a> &amp; <a href="https://mademistakes.com/work/minimal-mistakes-jekyll-theme/" rel="nofollow">Minimal Mistakes</a>.</div>
+
+      </footer>
+    </div>
+
+    
+  <script src="/assets/js/main.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+  </body>
+</html>
